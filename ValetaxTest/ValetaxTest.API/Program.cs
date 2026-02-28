@@ -1,3 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using System;
+using ValetaxTest.Infrastructure;
+using ValetaxTest.Infrastructure.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,7 +12,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+builder.Services.AddInfrastructure(builder.Configuration);
+
 var app = builder.Build();
+
+app.MapGet("/test-db", async (ValetaxTestDbContext dbContext) =>
+{
+    var canConnect = await dbContext.Database.CanConnectAsync();
+    return canConnect ? "Yes" : "No";
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

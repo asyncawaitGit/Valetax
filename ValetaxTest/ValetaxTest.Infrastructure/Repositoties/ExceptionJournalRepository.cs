@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using ValetaxTest.Application.Interfaces;
 using ValetaxTest.Domain.Entities;
 using ValetaxTest.Infrastructure.Data;
