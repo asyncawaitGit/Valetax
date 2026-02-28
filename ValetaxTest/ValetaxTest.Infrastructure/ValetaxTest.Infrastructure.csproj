@@ -19,8 +19,4 @@
     <ProjectReference Include="..\ValetaxTest.Domain\ValetaxTest.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Repositoties\" />
-  </ItemGroup>
-
 </Project>
