@@ -33,4 +33,10 @@ public class Node
 
         _children.Add(child);
     }
+
+    public void Delete()
+    {
+        if (_children.Any())
+            throw new SecureException("You have to delete all children nodes first");
+    }
 }

@@ -13,4 +13,10 @@ public sealed class NodeName
     }
 
     public override string ToString() => Value;
+
+    public override bool Equals(object? obj) => Equals(obj as NodeName);
+
+    public bool Equals(NodeName? other) => other != null && Value == other.Value;
+
+    public override int GetHashCode() => Value.GetHashCode();
 }
