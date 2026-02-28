@@ -1,7 +1,6 @@
-using Microsoft.EntityFrameworkCore;
-using System;
+using ValetaxTest.API.Middleware;
+using ValetaxTest.Application;
 using ValetaxTest.Infrastructure;
-using ValetaxTest.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,15 +12,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
-
-app.MapGet("/test-db", async (ValetaxTestDbContext dbContext) =>
-{
-    var canConnect = await dbContext.Database.CanConnectAsync();
-    return canConnect ? "Yes" : "No";
-});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -31,6 +25,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthorization();
 

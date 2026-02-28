@@ -109,25 +109,25 @@ public class TreeService : ITreeService
         if (!rootNodes.Any())
             throw new SecureException($"Tree '{treeName}' has no root nodes");
 
-        if (rootNodes.Count > 1)
-        {
-            // Логируем, но возвращаем первый (или можно объединить)
-            // По заданию не указано, но в Swagger возвращается один MNode
-        }
-
         return BuildTreeResponse(rootNodes.First(), nodes.ToList());
     }
 
     private async Task DeleteNodeAndDescendantsAsync(Node node, CancellationToken cancellationToken = default)
     {
-        // Сначала удаляем всех детей (рекурсивно)
-        foreach (var child in node.Children.ToList())
-        {
-            await DeleteNodeAndDescendantsAsync(child, cancellationToken);
-        }
+        if (node == null)
+            throw new SecureException($"Node with ID {node.Id} not found");
 
-        // Потом удаляем сам узел
-        _nodeRepository.Remove(node);
+        var nodeFind = await _nodeRepository.GetByIdAsync(node.Id, cancellationToken);
+
+        if (nodeFind == null)
+            throw new SecureException($"Node with ID {node.Id} not found");
+
+        if (nodeFind.Children.Any())
+            throw new SecureException("You have to delete all children nodes first");
+
+        _nodeRepository.Remove(nodeFind);
+
+        await _nodeRepository.SaveChangesAsync(cancellationToken);
     }
 
     private NodeResponse MapToResponse(Node node)
@@ -143,10 +143,12 @@ public class TreeService : ITreeService
     private NodeResponse BuildTreeResponse(Node root, List<Node> allNodes)
     {
         var response = MapToResponse(root);
+
         response.Children = allNodes
             .Where(x => x.ParentId == root.Id)
             .Select(x => BuildTreeResponse(x, allNodes))
             .ToList();
+
         return response;
     }
 }
