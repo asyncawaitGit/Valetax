@@ -10,6 +10,14 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
     {
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Id)
+            .ValueGeneratedOnAdd()
+            .UseIdentityColumn();
+
+        builder.Property(x => x.TreeName)
+            .IsRequired()
+            .HasMaxLength(100);
+
         builder.OwnsOne(x => x.Name, nameBuilder =>
         {
             nameBuilder.Property(n => n.Value)
@@ -18,17 +26,12 @@ public class NodeConfiguration : IEntityTypeConfiguration<Node>
                 .HasMaxLength(100);
         });
 
-        builder.HasIndex(x => x.TreeId);
+        builder.HasIndex(x => x.TreeName);
         builder.HasIndex(x => x.ParentId);
 
         builder.HasMany(x => x.Children)
             .WithOne()
             .HasForeignKey(x => x.ParentId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Ignore(x => x.Children);
-
-        builder.Property(x => x.ParentId)
-            .IsRequired(false);
     }
 }

@@ -14,24 +14,24 @@ public class NodeRepository : INodeRepository
         _context = context;
     }
 
-    public async Task<Node?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Node?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     {
         return await _context.Nodes
             .Include(x => x.Children)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<Node>> GetTreeNodesAsync(Guid treeId, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Node>> GetTreeNodesAsync(string treeName, CancellationToken cancellationToken = default)
     {
         return await _context.Nodes
-            .Where(x => x.TreeId == treeId)
-            .Include(x => x.Children)
-            .ToListAsync(cancellationToken);
+                    .Where(x => x.TreeName == treeName)
+                    .Include(x => x.Children)
+                    .ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> ExistsInTreeAsync(Guid treeId, CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsInTreeAsync(string treeName, CancellationToken cancellationToken = default)
     {
-        return await _context.Nodes.AnyAsync(x => x.TreeId == treeId, cancellationToken);
+        return await _context.Nodes.AnyAsync(x => x.TreeName == treeName, cancellationToken);
     }
 
     public void Add(Node node)

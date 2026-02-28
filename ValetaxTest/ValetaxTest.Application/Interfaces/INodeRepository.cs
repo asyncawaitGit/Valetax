@@ -4,11 +4,11 @@ namespace ValetaxTest.Application.Interfaces;
 
 public interface INodeRepository
 {
-    Task<Node?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<Node?> GetByIdAsync(long id, CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<Node>> GetTreeNodesAsync(Guid treeId, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<Node>> GetTreeNodesAsync(string treeName, CancellationToken cancellationToken = default);
 
-    Task<bool> ExistsInTreeAsync(Guid treeId, CancellationToken cancellationToken = default);
+    Task<bool> ExistsInTreeAsync(string treeName, CancellationToken cancellationToken = default);
 
     void Add(Node node);
 
