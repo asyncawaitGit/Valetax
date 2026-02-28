@@ -30,7 +30,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "awert-qwert-qwe-qwe-qwer-qwer-qwert"))
         };
 
-        // Optional: Add debug events
         options.Events = new JwtBearerEvents
         {
             OnAuthenticationFailed = context =>
