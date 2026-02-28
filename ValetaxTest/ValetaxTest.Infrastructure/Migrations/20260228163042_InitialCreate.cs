@@ -31,14 +31,21 @@ namespace ValetaxTest.Infrastructure.Migrations
                 name: "Nodes",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    TreeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ParentId = table.Column<Guid>(type: "uuid", nullable: true)
+                    TreeName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    ParentId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Nodes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Nodes_Nodes_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Nodes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -52,9 +59,9 @@ namespace ValetaxTest.Infrastructure.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Nodes_TreeId",
+                name: "IX_Nodes_TreeName",
                 table: "Nodes",
-                column: "TreeId");
+                column: "TreeName");
         }
 
         /// <inheritdoc />

@@ -12,7 +12,7 @@ using ValetaxTest.Infrastructure.Data;
 namespace ValetaxTest.Infrastructure.Migrations
 {
     [DbContext(typeof(ValetaxTestDbContext))]
-    [Migration("20260228152652_InitialCreate")]
+    [Migration("20260228163042_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -53,31 +53,40 @@ namespace ValetaxTest.Infrastructure.Migrations
 
             modelBuilder.Entity("ValetaxTest.Domain.Entities.Node", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("uuid");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<Guid>("TreeId")
-                        .HasColumnType("uuid");
+                    b.Property<long?>("ParentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TreeName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ParentId");
 
-                    b.HasIndex("TreeId");
+                    b.HasIndex("TreeName");
 
                     b.ToTable("Nodes");
                 });
 
             modelBuilder.Entity("ValetaxTest.Domain.Entities.Node", b =>
                 {
+                    b.HasOne("ValetaxTest.Domain.Entities.Node", null)
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.OwnsOne("ValetaxTest.Domain.ValueObjects.NodeName", "Name", b1 =>
                         {
-                            b1.Property<Guid>("NodeId")
-                                .HasColumnType("uuid");
+                            b1.Property<long>("NodeId")
+                                .HasColumnType("bigint");
 
                             b1.Property<string>("Value")
                                 .IsRequired()
@@ -95,6 +104,11 @@ namespace ValetaxTest.Infrastructure.Migrations
 
                     b.Navigation("Name")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ValetaxTest.Domain.Entities.Node", b =>
+                {
+                    b.Navigation("Children");
                 });
 #pragma warning restore 612, 618
         }
