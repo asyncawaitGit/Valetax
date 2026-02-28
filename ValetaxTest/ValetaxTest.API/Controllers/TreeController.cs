@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ValetaxTest.API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api.user.tree")]
 public class TreeController : ControllerBase
 {

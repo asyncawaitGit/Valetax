@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ValetaxTest.Application.Interfaces;
 
 namespace ValetaxTest.API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api.user.journal")]
 public class JournalController : ControllerBase
 {
